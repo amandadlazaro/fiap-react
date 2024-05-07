@@ -8,7 +8,8 @@ function PageHome() {
     const [posts, setPosts] = useState([]);
     const [categories, setCategories] = useState([]);
     const [feedbackPosts, setFeedbackPosts] = useState('Carregando posts...');
-    const [feedbackCategories, setFeedbackCategories] = useState('Carregando categorias...')
+    const [feedbackCategories, setFeedbackCategories] = useState('Carregando categorias...');
+
     const getPosts = async () => {
         try {
             const response = await client.getEntries({
