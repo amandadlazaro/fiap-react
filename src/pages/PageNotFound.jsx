@@ -1,37 +1,45 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Post from "../components/Post";
 import LayoutDefault from "../layout/LayoutDefault";
 import { client } from "../util/createClient";
-function PageAllPosts() {
+
+function PageNotFound() {
     const [posts, setPosts] = useState([]);
-    const [total, setTotal] = useState([]);
-    const limit = 3;
+    const [categories, setCategories] = useState([]);
     const [feedbackPosts, setFeedbackPosts] = useState('Carregando posts...');
-    const getAllPosts = async (page) => {
+    const [feedbackCategories, setFeedbackCategories] = useState('Carregando categorias...')
+    const getPosts = async () => {
         try {
             const response = await client.getEntries({
                 content_type: 'fiapBlogPost',
-                limit: limit,
-                skip: page,
+                limit: 2,
                 order: "-sys.createdAt"
             });
-
+    
             setPosts(response.items);
-            setTotal(Array.from({ length: (response.total / limit) }, (x, i) => i + 1));
         } catch (error) {
             setFeedbackPosts('Erro ao carregar os posts, run to the hills!');
         }
     };
 
-    const filter = (page) => {
-        getAllPosts(page * limit);
-    }
+    const getCategories = async () => {
+        try {
+            const response = await client.getEntries({
+                content_type: 'fiapBlogCategory',
+            });
+    
+            setCategories(response.items);
+        } catch (error) {
+            setFeedbackCategories('Erro ao carregar categorias, run to the hills!');
+        }
+    };
 
 
 
     useEffect(() => {
-        getAllPosts(0);
+        getPosts();
+        getCategories();
     }, []);
 
     return (
@@ -39,7 +47,7 @@ function PageAllPosts() {
             <div className="container">
                 <div className="row">
                     <main className="col-md-8">
-                        <h2 className="my-3">Todos os posts</h2>
+                        <h2 className="my-3">Área dos posts</h2>
 
                         {posts.length === 0 && (
                             <p>{feedbackPosts}</p>
@@ -54,28 +62,28 @@ function PageAllPosts() {
                             />
                         ))}
 
-                        <nav aria-label="...">
-                            <ul className="pagination pagination-lg">
-                                {total.map((page) => (
-
-                                    <li className="page-item">
-                                        <a className="page-link" onClick={() => { filter(page - 1); }}>{page}</a>
-                                    </li>
-                                ))}
-
-                            </ul>
-                        </nav>
-
-
-                        <Link to="/" className="btn btn-primary">
-                            Voltar
+                        <Link to="/posts" className="btn btn-primary">
+                            Ver todos os posts
                         </Link>
                     </main>
+                    <aside className="col-md-4">
+                        <h2 className="my-3">Categorias</h2>
 
+                        {categories.length === 0 && (
+                            <p>{feedbackCategories}</p>
+                        )}
+
+                        <ul>
+                        {categories.map((category) => (
+                              <li key={category.sys.id}>{category.fields.categoryTitle}</li>
+                        ))}
+                          
+                        </ul>
+                    </aside>
                 </div>
             </div>
         </LayoutDefault>
     )
 }
 
-export default PageAllPosts;
+export default PageNotFound;

@@ -4,7 +4,7 @@ function Header() {
     return (
       <nav className="navbar bg-body-tertiary">
         <div className="container-fluid">
-          <Link className="navbar-brand" to="/">My Blog</Link>
+          <Link className="navbar-brand" to="/"  style={{fontWeight: 'bold'}}>Amanda's Blog</Link>
         </div>
       </nav>
     );
