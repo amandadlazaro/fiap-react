@@ -4,6 +4,7 @@ import {  createBrowserRouter,  RouterProvider,} from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import PageHome from './pages/PageHome';
 import PagePost from './pages/PagePost';
+import PageAllPosts from './pages/PageAllPosts';
 
 const router = createBrowserRouter([
   {
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
   {
     path: "/post/:slug",
     element: <PagePost />
+  },
+  {
+    path: "/posts",
+    element: <PageAllPosts />
   }
 ])
 

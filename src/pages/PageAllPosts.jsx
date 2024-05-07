@@ -4,16 +4,13 @@ import Post from "../components/Post";
 import LayoutDefault from "../layout/LayoutDefault";
 import { client } from "../util/createClient";
 
-function PageHome() {
+function PageAllPosts() {
     const [posts, setPosts] = useState([]);
-    const [categories, setCategories] = useState([]);
     const [feedbackPosts, setFeedbackPosts] = useState('Carregando posts...');
-    const [feedbackCategories, setFeedbackCategories] = useState('Carregando categorias...')
-    const getPosts = async () => {
+    const getAllPosts = async () => {
         try {
             const response = await client.getEntries({
                 content_type: 'fiapBlogPost',
-                limit: 2,
                 order: "-sys.createdAt"
             });
     
@@ -23,23 +20,10 @@ function PageHome() {
         }
     };
 
-    const getCategories = async () => {
-        try {
-            const response = await client.getEntries({
-                content_type: 'fiapBlogCategory',
-            });
-    
-            setCategories(response.items);
-        } catch (error) {
-            setFeedbackCategories('Erro ao carregar categorias, run to the hills!');
-        }
-    };
-
 
 
     useEffect(() => {
-        getPosts();
-        getCategories();
+        getAllPosts();
     }, []);
 
     return (
@@ -47,7 +31,7 @@ function PageHome() {
             <div className="container">
                 <div className="row">
                     <main className="col-md-8">
-                        <h2 className="my-3">Área dos posts</h2>
+                        <h2 className="my-3">Todos os posts</h2>
 
                         {posts.length === 0 && (
                             <p>{feedbackPosts}</p>
@@ -62,28 +46,15 @@ function PageHome() {
                             />
                         ))}
 
-                        <Link to="/posts" className="btn btn-primary">
-                            Ver todos os posts
+                        <Link to="/" className="btn btn-primary">
+                            Voltar 
                         </Link>
                     </main>
-                    <aside className="col-md-4">
-                        <h2 className="my-3">Categorias</h2>
-
-                        {categories.length === 0 && (
-                            <p>{feedbackCategories}</p>
-                        )}
-
-                        <ul>
-                        {categories.map((category) => (
-                              <li key={category.sys.id}>{category.fields.categoryTitle}</li>
-                        ))}
-                          
-                        </ul>
-                    </aside>
+               
                 </div>
             </div>
         </LayoutDefault>
     )
 }
 
-export default PageHome;
+export default PageAllPosts;
